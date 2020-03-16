@@ -1,0 +1,19 @@
+server:
+  port: 10001
+
+spring:
+  application:
+    name: im-gateway
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+
+im:
+  server:
+    netty:
+      epoll: false
+    websocket:
+      port: 8080
+
