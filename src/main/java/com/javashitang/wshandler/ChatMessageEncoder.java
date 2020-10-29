@@ -1,6 +1,7 @@
 package com.javashitang.wshandler;
 
 import com.javashitang.domain.ChatMessage;
+import com.javashitang.tool.JsonConvert;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
@@ -13,7 +14,7 @@ public class ChatMessageEncoder extends MessageToMessageEncoder<ChatMessage> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ChatMessage msg, List<Object> out) throws Exception {
-        String text = "";
+        String text = JsonConvert.obj2Str(msg);
         TextWebSocketFrame frame = new TextWebSocketFrame(text);
         out.add(frame);
     }

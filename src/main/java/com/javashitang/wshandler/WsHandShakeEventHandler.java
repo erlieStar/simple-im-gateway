@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @ChannelHandler.Sharable
 public class WsHandShakeEventHandler extends SimpleUserEventChannelHandler<WebSocketServerProtocolHandler.HandshakeComplete> {
 
+    // 建立连接后进行参数校验
     @Override
     protected void eventReceived(ChannelHandlerContext ctx, WebSocketServerProtocolHandler.HandshakeComplete evt) throws Exception {
         // 进行参数校验
@@ -23,6 +24,6 @@ public class WsHandShakeEventHandler extends SimpleUserEventChannelHandler<WebSo
 
     // 处理websocket握手完成的事件
     private boolean dealHandsharkComplete() {
-
+        return true;
     }
 }

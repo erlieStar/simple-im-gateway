@@ -26,8 +26,6 @@ public class ServerStarter {
 
     @Value("im.server.websocket.port")
     private int serverPort;
-    @Value("im.server.netty.epoll")
-    private boolean epoll;
     private EventLoopGroup boss;
     private EventLoopGroup work;
 
@@ -36,21 +34,9 @@ public class ServerStarter {
 
     @PostConstruct
     public void init() {
-        if ("Linux".equals(System.getProperty("os.name"))) {
-            epoll = false;
-        }
-        initEventLoopGroup();
+        boss = new NioEventLoopGroup();
+        work = new NioEventLoopGroup();
         startServer();
-    }
-
-    public void initEventLoopGroup() {
-        if (epoll) {
-            boss = new EpollEventLoopGroup();
-            work = new EpollEventLoopGroup();
-        } else {
-            boss = new NioEventLoopGroup();
-            work = new NioEventLoopGroup();
-        }
     }
 
     public void startServer() {
@@ -58,7 +44,7 @@ public class ServerStarter {
         work = new EpollEventLoopGroup();
         ServerBootstrap bootstrap = new ServerBootstrap();
         ChannelFuture future = bootstrap.group(boss, work).handler(new LoggingHandler(LogLevel.DEBUG))
-                .channel(epoll ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+                .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT).childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT).childHandler(gatewayChannelInitializer)
                 .bind(serverPort);

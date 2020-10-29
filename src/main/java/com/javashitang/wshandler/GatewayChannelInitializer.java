@@ -12,38 +12,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 @Component
 public class GatewayChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    @Value("${im.server.websocket.heartbeat.read.timeout}")
-    private Integer readerIdleTime;
-    @Value("${im.server.websocket.heartbeat.write.timeout}")
-    private Integer writerIdleTime;
-    @Value("${im.server.websocket.heartbeat.all.timeout}")
-    private Integer allIdleTime;
-
-    @Autowired
-    private IdleUserEventHandler idleUserEventHandler;
-    @Autowired
+    @Resource
     private WsHandShakeEventHandler wsHandShakeEventHandler;
-    // 解码器
-    @Autowired
+    @Resource
     private ChatMessageDecoder chatMessageDecoder;
-    // 编码器
-    @Autowired
+    @Resource
     private ChatMessageEncoder chatMessageEncoder;
-    // 异步线程组
-    @Autowired
+    @Resource
     private DefaultEventLoopGroup asyncEventLoopGroup;
-    @Autowired
+    @Resource
     private AsyncWsInboundHandler asyncWsInboundHandler;
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        // 多长时间没有读到客户端的数据，有可能发生连接假死
-        pipeline.addLast(new IdleStateHandler(readerIdleTime, writerIdleTime, allIdleTime));
-        pipeline.addLast(idleUserEventHandler);
         pipeline.addLast(new HttpServerCodec());
         // 聚合http消息
         pipeline.addLast(new HttpObjectAggregator(65535));
@@ -51,8 +38,11 @@ public class GatewayChannelInitializer extends ChannelInitializer<SocketChannel>
         pipeline.addLast(new FlowControlHandler());
         // 握手事件监听器
         pipeline.addLast(wsHandShakeEventHandler);
+        // 二次解码器
         pipeline.addLast(chatMessageDecoder);
+        // 二次编码器
         pipeline.addLast(chatMessageEncoder);
+        // 业务处理，放在异步线程组中，注意不要阻塞
         pipeline.addLast(asyncEventLoopGroup, asyncWsInboundHandler);
     }
 }

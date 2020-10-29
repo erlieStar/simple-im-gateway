@@ -2,6 +2,7 @@ package com.javashitang.utils;
 
 import com.javashitang.component.others.ChannelContextHolder;
 import com.javashitang.domain.ChatMessage;
+import com.javashitang.tool.JsonConvert;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -24,7 +25,7 @@ public class CommonUtil {
     public static ChannelFuture sendMessageBackToChannel(ChannelContextHolder holder, ChatMessage msg) {
         ChannelHandlerContext ctx = holder.getChannelByUserId(msg.getSender());
         if (ctx == null) {
-            log.error("sendMessageBackToChannel error, msg: {}", JsonConvert.obj2String(msg));
+            log.error("sendMessageBackToChannel error, msg: {}", JsonConvert.obj2Str(msg));
         }
         return sendMessage(ctx, msg);
     }

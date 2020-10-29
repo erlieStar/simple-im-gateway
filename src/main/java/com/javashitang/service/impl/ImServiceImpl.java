@@ -3,18 +3,19 @@ package com.javashitang.service.impl;
 import com.javashitang.domain.ChatMessage;
 import com.javashitang.domain.UserLoginInfo;
 import com.javashitang.service.inf.ChatMessageService;
-import com.javashitang.service.inf.ImLoginService;
+import com.javashitang.service.inf.ImService;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 @Slf4j
 @Component
-public class ImLoginServiceImpl implements ImLoginService {
+public class ImServiceImpl implements ImService {
 
-    @Autowired
-    ChatMessageService chatMessageService;
+    @Resource
+    private ChatMessageService chatMessageService;
 
     @Override
     public void onMessage(ChannelHandlerContext ctx, UserLoginInfo loginInfo, ChatMessage msg) {

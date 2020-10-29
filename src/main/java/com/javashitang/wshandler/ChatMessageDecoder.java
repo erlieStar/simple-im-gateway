@@ -1,5 +1,7 @@
 package com.javashitang.wshandler;
 
+import com.javashitang.domain.ChatMessage;
+import com.javashitang.tool.JsonConvert;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
@@ -14,6 +16,7 @@ public class ChatMessageDecoder extends MessageToMessageDecoder<TextWebSocketFra
     @Override
     protected void decode(ChannelHandlerContext ctx, TextWebSocketFrame msg, List<Object> out) throws Exception {
         String text = msg.text();
-        out.add()
+        ChatMessage chatMessage = JsonConvert.str2Obj(text, ChatMessage.class);
+        out.add(chatMessage);
     }
 }

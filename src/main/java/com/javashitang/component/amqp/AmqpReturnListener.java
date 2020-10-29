@@ -2,7 +2,7 @@ package com.javashitang.component.amqp;
 
 import com.javashitang.domain.ChatMessage;
 import com.javashitang.service.inf.ChatMessageService;
-import com.javashitang.utils.JsonConvert;
+import com.javashitang.tool.JsonConvert;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class AmqpReturnListener implements RabbitTemplate.ReturnCallback {
 
     @Override
     public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
-        ChatMessage chatMessage = JsonConvert.string2Obj(message.toString(), ChatMessage.class);
+        ChatMessage chatMessage = JsonConvert.str2Obj(message.toString(), ChatMessage.class);
         chatMessageService.handleSendCallback(chatMessage, false, replyText);
     }
 }
